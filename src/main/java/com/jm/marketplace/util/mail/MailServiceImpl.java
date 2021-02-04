@@ -5,6 +5,7 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
+import org.springframework.mail.MailMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -30,36 +31,24 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void send(@NonNull User user, @NonNull String subject, @NonNull String message) {
-        try {
-            javaMailSender.send(createSimpleMessage(user, subject, message));
-        } catch (MailException e) {
-            throw new RuntimeException("", e);
-        }
+        sendMessages(createSimpleMessage(user, subject, message));
     }
 
     @Override
     public void send(@NonNull User user, @NonNull String subject, @NonNull String message, @NonNull File... files) {
-        javaMailSender.send(createMimeMessage(user, subject, message, files));
+        sendMessages(createMimeMessage(user, subject, message, files));
     }
 
     @Override
     public void broadcast(@NonNull Collection<User> users, @NonNull String subject, @NonNull String message) {
         List<SimpleMailMessage> messages = users.stream().map(user -> createSimpleMessage(user, subject, message)).collect(Collectors.toList());
-        try {
-            javaMailSender.send(messages.toArray(new SimpleMailMessage[]{}));
-        } catch (MailException e) {
-            throw new RuntimeException("", e);
-        }
+        sendMessages(messages.toArray(new SimpleMailMessage[]{}));
     }
 
     @Override
     public void broadcast(@NonNull Collection<User> users, @NonNull String subject, @NonNull String message, @NonNull File... files) {
         List<MimeMessage> messages = users.stream().map(user -> createMimeMessage(user, subject, message, files)).collect(Collectors.toList());
-        try {
-            javaMailSender.send(messages.toArray(new MimeMessage[]{}));
-        } catch (MailException e) {
-            throw new RuntimeException("", e);
-        }
+        sendMessages(messages.toArray(new MimeMessage[]{}));
     }
 
     private SimpleMailMessage createSimpleMessage(User user, String subject, String message) {
@@ -87,6 +76,22 @@ public class MailServiceImpl implements MailService {
             return mimeMessage;
         } catch (MessagingException messageException) {
             throw new RuntimeException("", messageException);
+        }
+    }
+
+    private void sendMessages(MimeMessage... messages) {
+        try {
+            javaMailSender.send(messages);
+        } catch (MailException e) {
+            throw new RuntimeException("", e);
+        }
+    }
+
+    private void sendMessages(SimpleMailMessage... messages) {
+        try {
+            javaMailSender.send(messages);
+        } catch (MailException e) {
+            throw new RuntimeException("", e);
         }
     }
 }
