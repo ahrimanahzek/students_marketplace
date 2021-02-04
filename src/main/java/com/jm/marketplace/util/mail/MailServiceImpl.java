@@ -5,7 +5,6 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -66,13 +65,7 @@ public class MailServiceImpl implements MailService {
             helper.setText(message);
             helper.setSubject(subject);
             helper.setTo(user.getEmail());
-            Arrays.stream(files).forEach(file -> {
-                try {
-                    helper.addAttachment(file.getName(), new FileSystemResource(file));
-                } catch (MessagingException e) {
-                    throw new RuntimeException("", e);
-                }
-            });
+            setAttachmentFiles(helper, files);
             return mimeMessage;
         } catch (MessagingException messageException) {
             throw new RuntimeException("", messageException);
@@ -93,5 +86,15 @@ public class MailServiceImpl implements MailService {
         } catch (MailException e) {
             throw new RuntimeException("", e);
         }
+    }
+
+    private void setAttachmentFiles(MimeMessageHelper helper, File[] files) {
+        Arrays.stream(files).forEach(file -> {
+            try {
+                helper.addAttachment(file.getName(), new FileSystemResource(file));
+            } catch (MessagingException e) {
+                throw new RuntimeException("", e);
+            }
+        });
     }
 }
