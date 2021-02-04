@@ -9,6 +9,6 @@ public interface MailService {
 
     void send(User user, String message);
     void send(User user, String message, File... files);
-    void broadcast(Collection<User> user, String message);
-    void broadcast(Collection<User> user, String message, File... files);
+    void broadcast(Collection<User> users, String message);
+    void broadcast(Collection<User> users, String message, File... files);
 }
