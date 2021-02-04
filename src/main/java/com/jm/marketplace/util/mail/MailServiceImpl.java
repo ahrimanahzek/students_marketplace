@@ -20,12 +20,12 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void broadcast(Collection<User> user, String message) {
+    public void broadcast(Collection<User> users, String message) {
 
     }
 
     @Override
-    public void broadcast(Collection<User> user, String message, File... files) {
+    public void broadcast(Collection<User> users, String message, File... files) {
 
     }
 }
