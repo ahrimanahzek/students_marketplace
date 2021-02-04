@@ -68,7 +68,10 @@ public class MailServiceImpl implements MailService {
             setAttachmentFiles(helper, files);
             return mimeMessage;
         } catch (MessagingException messageException) {
-            throw new RuntimeException("", messageException);
+            throw new RuntimeException(
+                    String.format("Error with create message: email = %s, subject = %s, message = %s",
+                            user.getEmail(), subject, message)
+                    , messageException);
         }
     }
 
@@ -76,7 +79,7 @@ public class MailServiceImpl implements MailService {
         try {
             javaMailSender.send(messages);
         } catch (MailException e) {
-            throw new RuntimeException("", e);
+            throw new RuntimeException("Error send message!", e);
         }
     }
 
@@ -84,7 +87,7 @@ public class MailServiceImpl implements MailService {
         try {
             javaMailSender.send(messages);
         } catch (MailException e) {
-            throw new RuntimeException("", e);
+            throw new RuntimeException("Error send message!", e);
         }
     }
 
@@ -93,7 +96,7 @@ public class MailServiceImpl implements MailService {
             try {
                 helper.addAttachment(file.getName(), new FileSystemResource(file));
             } catch (MessagingException e) {
-                throw new RuntimeException("", e);
+                throw new RuntimeException("Error with create message!", e);
             }
         });
     }
