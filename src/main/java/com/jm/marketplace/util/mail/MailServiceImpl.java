@@ -14,7 +14,7 @@ import java.util.Collection;
 public class MailServiceImpl implements MailService {
 
     private final JavaMailSender javaMailSender;
-    private MailService mailService;
+
     @Autowired
     public MailServiceImpl(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
